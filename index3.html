@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome's Dinosaur Game</title>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #container {
+            width: 800px;
+            height: 300px;
+            border: 2px solid black;
+            position: relative;
+        }
+        #dinosaur {
+            width: 50px;
+            height: 100px;
+            position: absolute;
+            bottom: 0px;
+            left: 100px;
+        }
+        .hop {
+            animation: hop 1s ease-in;
+        }
+        #badal{
+            width: 50px;
+            height: 100px;
+            position: absolute;
+            bottom: 0px;
+           top: 50px;
+           animation: move 4s infinite linear;
+        }
+        .cactus {
+            position: absolute;
+            bottom: 0px;
+            animation: move 4s infinite linear;
+        }
+        .cactus img {
+            width: 30px;
+            height: 60px;
+        }
+        @keyframes move {
+            0% {
+                right: 0px;
+            }
+            50% {
+                right: 400px;
+            }
+            100% {
+                right: 750px;
+            }
+        }
+        @keyframes hop {
+            0% {
+                bottom: 0px;
+            }
+            70% {
+                bottom: 100px;
+            }
+            100% {
+                bottom: 120px;
+            }
+        }
+        @keyframes badal1 {
+            0% {
+                right: 0px;
+            }
+            50% {
+                right: 400px;
+            }
+            100% {
+                right: 750px;
+            }
+        }
+        
+        #gameover {
+            height: 300px;
+            width: 800px;
+            background-color: cornflowerblue;
+            margin: 0rem auto;
+            text-align: center;
+            display: none;
+        }
+        #btn{
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        border: none;
+        background-color: black;
+        color: cyan;
+        font-size: 25px;
+        margin-top: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="dinosaur">
+            <img src="img/dino-dead.png">
+        </div>
+        <div class="cactus" id="obstacle">
+            <img src="img/cactus3.png">
+        </div>
+        <div class="badal" id="badal">
+            <img src="img/cloud.png">
+        </div>
+        
+        <div id="gameover">
+            <h1>Game Over</h1>
+            <p id="score"></p>
+            <button id="btn" onclick="location.reload()">Restart</button>
+        </div>
+    </div>
+    <audio id="sound" src="sound.mp3"></audio>
+
+    <script>
+        let dinosaur = document.getElementById('dinosaur');
+        let obstacles = document.querySelectorAll('.cactus');
+        let gameover = document.getElementById('gameover');
+        let scoreText = document.getElementById('score');
+        let score = 0;
+        let badal = document.getElementById('badal');
+         sound = document.getElementById("sound")
+
+        window.addEventListener('click', jump);
+        window.addEventListener("keydown", jump);
+
+        function jump() {
+            dinosaur.classList.add('hop');
+            setTimeout(function () {
+                dinosaur.classList.remove('hop');
+            }, 1000);
+            sound.play();
+        }
+
+        setInterval(checkCollision, 10);
+
+        function checkCollision() {
+            let dinosaurTop = parseInt(window.getComputedStyle(dinosaur).getPropertyValue('top'));
+            
+            obstacles.forEach((obstacle) => {
+                let obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue('left'));
+                if (dinosaurTop === 196 && obstacleLeft <= 160 && obstacleLeft > 100) {
+                    badal.style.animationPlayState = 'paused';
+                    obstacles.forEach((o) => {
+                        o.style.animationPlayState = 'paused';
+                    });
+                    gameover.style.display = 'block';
+                    scoreText.textContent = `Score: ${score}`;
+                }
+            });
+        }
+
+       
+
+        function incrementScore() {
+            score++;
+        }
+    </script>
+</body>
+</html>
